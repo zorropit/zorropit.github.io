@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zorro Pit — POS Offline-First para Tiendas de Repuestos Automotrices</title>
+  <meta name="description" content="Sistema de escritorio ultrarrápido para tiendas de repuestos automotrices en Venezuela. Búsquedas en menos de 50ms, control bimoneda USD/Bs y cero dependencia de internet." />
+  <link rel="icon" type="image/png" href="./assets/zorro-pit-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed-dim": "#ffb95f",
+            "surface-container-highest": "#333538",
+            "on-tertiary-fixed": "#002113",
+            "tertiary-fixed-dim": "#4edea3",
+            "primary-container": "#ff6b00",
+            "on-tertiary-container": "#003925",
+            "on-tertiary-fixed-variant": "#005236",
+            "on-primary": "#561f00",
+            "on-tertiary": "#003824",
+            "on-secondary-container": "#5b3800",
+            "on-surface": "#e2e2e6",
+            "surface-container": "#1e2023",
+            "secondary-fixed": "#ffddb8",
+            "error": "#ffb4ab",
+            "on-error": "#690005",
+            "surface": "#111317",
+            "surface-dim": "#111317",
+            "secondary": "#ffb95f",
+            "surface-bright": "#37393d",
+            "error-container": "#93000a",
+            "primary-fixed": "#ffdbcc",
+            "on-background": "#e2e2e6",
+            "primary": "#ffb693",
+            "primary-fixed-dim": "#ffb693",
+            "on-primary-fixed": "#351000",
+            "surface-container-low": "#1a1c1f",
+            "tertiary": "#4edea3",
+            "background": "#111317",
+            "on-secondary": "#472a00",
+            "outline-variant": "#5a4136",
+            "inverse-surface": "#e2e2e6",
+            "inverse-on-surface": "#2f3034",
+            "surface-container-high": "#282a2d",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#7a3000",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-container-lowest": "#0c0e11",
+            "secondary-container": "#ee9800",
+            "inverse-primary": "#a04100",
+            "on-surface-variant": "#e2bfb0",
+            "surface-variant": "#333538",
+            "on-secondary-fixed": "#2a1700",
+            "surface-tint": "#ffb693",
+            "on-secondary-fixed-variant": "#653e00",
+            "tertiary-container": "#00ae78",
+            "outline": "#a98a7d",
+            "on-primary-container": "#572000"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "gutter": "1rem",
+            "margin-desktop": "1.5rem",
+            "gutter-desktop": "1.25rem",
+            "margin": "1rem",
+            "space-xl": "2rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.25rem",
+            "space-md": "0.75rem"
+          },
+          fontFamily: {
+            "mono-indexer": ["JetBrains Mono", "monospace"],
+            "headline-md": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "display-lg-mobile": ["Inter", "sans-serif"],
+            "mono-editorial-lg": ["JetBrains Mono", "monospace"],
+            "body-sm": ["Inter", "sans-serif"],
+            "mono-currency": ["JetBrains Mono", "monospace"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "mono-part-num": ["JetBrains Mono", "monospace"],
+            "body-lg": ["Inter", "sans-serif"],
+            "mono-data": ["JetBrains Mono", "monospace"],
+            "display-lg": ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            "mono-indexer": ["11px", { lineHeight: "12px", letterSpacing: "0.1em", fontWeight: "700" }],
+            "headline-md": ["22px", { lineHeight: "26px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "body-md": ["13px", { lineHeight: "18px", letterSpacing: "0em", fontWeight: "400" }],
+            "headline-lg": ["28px", { lineHeight: "32px", letterSpacing: "-0.025em", fontWeight: "700" }],
+            "display-lg-mobile": ["30px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "800" }],
+            "mono-editorial-lg": ["20px", { lineHeight: "24px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "0em", fontWeight: "400" }],
+            "mono-currency": ["14px", { lineHeight: "16px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "headline-sm": ["18px", { lineHeight: "22px", letterSpacing: "-0.015em", fontWeight: "600" }],
+            "mono-part-num": ["12px", { lineHeight: "14px", letterSpacing: "0.06em", fontWeight: "600" }],
+            "body-lg": ["15px", { lineHeight: "22px", letterSpacing: "-0.005em", fontWeight: "400" }],
+            "mono-data": ["13px", { lineHeight: "16px", letterSpacing: "0em", fontWeight: "500" }],
+            "display-lg": ["40px", { lineHeight: "44px", letterSpacing: "-0.03em", fontWeight: "800" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+  <!-- ========================================================= -->
+  <!-- STICKY TOP NAVIGATION BAR                                 -->
+  <!-- ========================================================= -->
+  <header class="sticky top-0 z-50 w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container-high/60">
+    <div class="max-w-[1440px] mx-auto h-16 px-gutter-desktop flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-space-md">
+        <img alt="Zorro Pit Logo" class="h-8 w-8 rounded object-contain" src="./assets/zorro-pit-icon.png" />
+        <div class="flex items-center gap-space-xs">
+          <span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface font-bold">ZORRO PIT</span>
+          <span class="font-mono-indexer text-mono-indexer uppercase bg-primary-container text-on-primary-container px-space-xs py-0.5 rounded">V1.0</span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-space-lg">
+        <nav class="hidden md:flex items-center gap-space-lg" aria-label="Navegación principal">
+          <a class="font-body-md text-body-md text-primary font-bold hover:text-on-surface transition-colors" href="#la-app">La App</a>
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#modulos">Módulos</a>
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#licenciamiento">Licenciamiento</a>
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#nosotros">Nosotros</a>
+          <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#contacto">Contacto</a>
+        </nav>
+
+        <div class="flex items-center gap-space-sm">
+          <a class="inline-flex items-center justify-center font-mono-indexer text-mono-indexer uppercase bg-primary-container text-on-primary-container px-space-md py-space-sm rounded hover:bg-secondary-container transition-colors" href="#contacto">Solicitar Demo</a>
+          <button id="mobile-menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" class="md:hidden w-9 h-9 rounded bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors">
+            <span class="material-symbols-outlined text-[20px]">menu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-surface-container-lowest border-t border-surface-container-high px-gutter-desktop py-4">
+      <nav class="flex flex-col gap-3" aria-label="Navegación móvil">
+        <a class="font-body-md text-body-md text-primary font-bold py-1" href="#la-app">La App</a>
+        <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface py-1" href="#modulos">Módulos</a>
+        <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface py-1" href="#licenciamiento">Licenciamiento</a>
+        <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface py-1" href="#nosotros">Nosotros</a>
+        <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface py-1" href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="w-full bg-surface">
+    <div class="flex flex-col w-full text-on-surface">
+      <!-- ========================================================= -->
+      <!-- 01 // HERO SECTION (Split 7/5 Asymmetric Grid)             -->
+      <!-- ========================================================= -->
+      <section class="relative w-full px-gutter-desktop py-12 md:py-16 overflow-hidden">
+        <!-- Ambient technical grid glow -->
+        <div class="absolute -top-24 -left-20 w-96 h-96 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/2 right-0 w-[500px] h-[500px] bg-tertiary-container/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left Column (col-span-7) -->
+          <div class="lg:col-span-7 flex flex-col justify-center">
+            <!-- Monospace Tag -->
+            <div class="inline-flex items-center gap-space-xs self-start px-space-sm py-1 bg-surface-container-high rounded border-0">
+              <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+              <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-widest">01 // POS OFFLINE-FIRST PARA REPUESTOS</span>
+            </div>
+
+            <!-- Massive Editorial H1 -->
+            <h1 class="font-headline-lg text-display-lg-mobile md:text-display-lg text-on-surface font-extrabold tracking-tighter mt-4 max-w-2xl leading-[1.08]">
+              Tu mostrador de repuestos a toda máquina.
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed mt-6 max-w-xl">
+              Sistema de escritorio ultrarrápido para tiendas de repuestos automotrices en Venezuela. Búsquedas en menos de 50ms, control bimoneda USD/Bs y cero dependencia de internet.
+            </p>
+
+            <!-- CTAs Row -->
+            <div class="mt-8 flex flex-wrap gap-4 items-center">
+              <a class="bg-[#25d366] hover:bg-[#20ba59] text-[#0c0e11] font-bold px-7 py-3.5 rounded-lg flex items-center gap-2 shadow-lg shadow-[#25d366]/20 transition-all font-body-md" href="https://wa.me/584120000000?text=Hola,%20deseo%20solicitar%20una%20demo%20de%20Zorro%20Pit" rel="noopener noreferrer" target="_blank">
+                <span class="material-symbols-outlined text-[20px]">chat</span>
+                <span>Solicitar Demo por WhatsApp</span>
+              </a>
+              <a class="bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold px-6 py-3.5 rounded-lg transition-all font-body-md flex items-center gap-2" href="#modulos">
+                <span>Explorar Módulos</span>
+                <span class="material-symbols-outlined text-[18px] text-primary">arrow_downward</span>
+              </a>
+            </div>
+
+            <!-- Technical micro-specs ticker -->
+            <div class="mt-8 pt-6 flex items-center gap-3 bg-surface-container-lowest/60 p-3 rounded-lg max-w-xl">
+              <span class="material-symbols-outlined text-primary text-[18px]">terminal</span>
+              <p class="font-mono-data text-mono-data text-on-surface-variant">
+                Compatible con Windows 10/11 • SQLite local encriptado • Conexión para lector de código de barras e impresora térmica
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Column (col-span-5): Interactive Terminal Card -->
+          <div class="lg:col-span-5 lg:mt-4">
+            <div class="bg-surface-container-low rounded-xl shadow-2xl overflow-hidden p-5 transition-all hover:bg-surface-container border border-surface-container-high/60">
+              <!-- Window Titlebar -->
+              <div class="flex items-center justify-between pb-3 bg-surface-container-lowest/80 -mx-5 -mt-5 px-5 pt-3.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-error inline-block"></span>
+                  <span class="w-3 h-3 rounded-full bg-secondary inline-block"></span>
+                  <span class="w-3 h-3 rounded-full bg-tertiary inline-block"></span>
+                  <span class="font-mono-indexer text-mono-indexer text-on-surface-variant ml-2">Zorro Pit v1.2 — Terminal Mostrador 01</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-tertiary-container/30">
+                  <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  <span class="font-mono-indexer text-[10px] uppercase text-tertiary tracking-wider">OFFLINE ACTIVO</span>
+                </div>
+              </div>
+
+              <!-- Live Telemetry Pill Bar -->
+              <div class="mt-4 flex flex-wrap gap-2 items-center">
+                <div class="bg-surface-container-highest/60 px-2.5 py-1 rounded font-mono-indexer text-mono-indexer text-[#06b6d4] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">currency_exchange</span>
+                  <span>BCV: 45.20 Bs</span>
+                </div>
+                <div class="bg-surface-container-highest/60 px-2.5 py-1 rounded font-mono-indexer text-mono-indexer text-[#a855f7] flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">price_change</span>
+                  <span>Reposición: 52.80 Bs</span>
+                </div>
+                <div class="ml-auto font-mono-indexer text-mono-indexer text-tertiary flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[13px]">speed</span>
+                  <span>Latencia: 12ms</span>
+                </div>
+              </div>
+
+              <!-- Search Simulation Input -->
+              <div class="mt-4 bg-surface-container-lowest px-3 py-2.5 rounded flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="material-symbols-outlined text-primary text-[18px]">search</span>
+                  <span class="font-mono-data text-mono-data text-on-surface font-bold">04465-0K240</span>
+                  <span class="w-2 h-4 bg-primary inline-block animate-pulse"></span>
+                </div>
+                <span class="bg-surface-container-high px-2 py-0.5 rounded font-mono-indexer text-[10px] text-on-surface-variant uppercase">Ctrl + Espacio</span>
+              </div>
+
+              <!-- Instant Query Result Card -->
+              <div class="mt-4 bg-surface-container-high p-4 rounded-lg flex flex-col gap-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <span class="font-mono-indexer text-[10px] uppercase text-primary">MOTOR • SISTEMA FRENOS</span>
+                    <h4 class="font-headline-sm text-headline-sm text-on-surface font-bold mt-0.5">Pastillas de Freno Cerámicas Delanteras</h4>
+                  </div>
+                  <span class="bg-tertiary-container/40 text-tertiary px-2 py-1 rounded font-mono-indexer text-[10px] font-bold whitespace-nowrap">
+                    14 Juegos disp.
+                  </span>
+                </div>
+
+                <!-- Monospace OEM & Ref -->
+                <div class="font-mono-part-num text-mono-part-num text-on-surface-variant">
+                  OEM 04465-0K240 • Cross-Ref: FMSI D1303
+                </div>
+                <div class="flex items-center gap-1.5 font-body-sm text-body-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span>
+                  <span>Toyota Hilux 2.7 / 3.0 (2006-2022), Fortuner</span>
+                </div>
+
+                <div class="flex items-center justify-between pt-2 bg-surface-container-lowest/80 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+                  <div class="flex items-center gap-1 font-mono-data text-mono-data text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[16px] text-primary">warehouse</span>
+                    <span>Pasillo B-04 / Estante 2</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="font-mono-currency text-mono-currency text-[#10b981] font-bold block">$28.50 USD</span>
+                    <span class="font-mono-indexer text-[10px] text-[#06b6d4] block">1,288.20 Bs (Tasa BCV)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions Row -->
+              <div class="mt-4 grid grid-cols-3 gap-2">
+                <a href="#modulos" class="bg-surface-container hover:bg-surface-container-highest text-on-surface py-2 px-1 rounded font-mono-indexer text-[11px] flex items-center justify-center gap-1 transition-colors">
+                  <span class="text-tertiary font-bold">[F2]</span> WhatsApp
+                </a>
+                <a href="#modulos" class="bg-surface-container hover:bg-surface-container-highest text-on-surface py-2 px-1 rounded font-mono-indexer text-[11px] flex items-center justify-center gap-1 transition-colors">
+                  <span class="text-primary font-bold">[F5]</span> Nota Entrega
+                </a>
+                <a href="#modulos" class="bg-surface-container hover:bg-surface-container-highest text-on-surface py-2 px-1 rounded font-mono-indexer text-[11px] flex items-center justify-center gap-1 transition-colors">
+                  <span class="text-secondary font-bold">[F8]</span> Cobro Mixto
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- 02 // QUÉ ES ZORRO PIT (Asymmetric 4/8)                    -->
+      <!-- ========================================================= -->
+      <section class="w-full px-gutter-desktop py-20 bg-surface-container-lowest scroll-mt-16" id="la-app">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left Column (col-span-4) -->
+          <div class="lg:col-span-4 flex flex-col">
+            <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-widest">02 // LA APLICACIÓN</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight mt-2">
+              Diseñado para la realidad del mostrador venezolano.
+            </h2>
+            <div class="w-16 h-1 bg-primary-container mt-4 rounded-full"></div>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-4">
+              Arquitectura robusta creada directamente en el taller y mostrador comercial, donde la continuidad operativa es la ley absoluta.
+            </p>
+          </div>
+
+          <!-- Right Column (col-span-8) -->
+          <div class="lg:col-span-8 flex flex-col">
+            <p class="font-body-lg text-body-lg text-on-surface leading-relaxed bg-surface-container-low p-6 rounded-xl">
+              En un mostrador de repuestos, cada segundo cuenta. Si el internet se cae o la luz parpadea, tu negocio no puede detenerse. Zorro Pit fue desarrollado como una aplicación nativa de escritorio que funciona 100% desconectada, instalable en PCs de mostrador con Windows 10 y apenas 4 GB de RAM. Cero servidores en la nube lentos, cero cuelgues, y control total de tus precios en dólares y bolívares al instante.
+            </p>
+
+            <!-- Staggered 2x2 Typographic Stat Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+              <div class="bg-surface-container p-6 rounded-lg flex flex-col gap-2 transition-transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-editorial-lg text-4xl text-primary font-bold">&lt; 50ms</span>
+                  <span class="material-symbols-outlined text-primary text-2xl">bolt</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Búsqueda instantánea por SKU, OEM o vehículo</p>
+              </div>
+
+              <div class="bg-surface-container p-6 rounded-lg flex flex-col gap-2 transition-transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-editorial-lg text-4xl text-[#10b981] font-bold">0%</span>
+                  <span class="material-symbols-outlined text-[#10b981] text-2xl">wifi_off</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Dependencia de internet para vender o cotizar</p>
+              </div>
+
+              <div class="bg-surface-container p-6 rounded-lg flex flex-col gap-2 transition-transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-editorial-lg text-4xl text-on-surface font-bold">4 GB</span>
+                  <span class="material-symbols-outlined text-on-surface text-2xl">memory</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">RAM mínima en PCs de mostrador Windows</p>
+              </div>
+
+              <div class="bg-surface-container p-6 rounded-lg flex flex-col gap-2 transition-transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-editorial-lg text-4xl text-[#06b6d4] font-bold">&lt; 20 MB</span>
+                  <span class="material-symbols-outlined text-[#06b6d4] text-2xl">folder_zip</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Instalador nativo ligero y sin bloatware</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- 03 // MÓDULOS CLAVE (Asymmetric Bento)                    -->
+      <!-- ========================================================= -->
+      <section class="w-full px-gutter-desktop py-20 bg-surface scroll-mt-16" id="modulos">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-10">
+          <!-- Section Header -->
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-widest">03 // MÓDULOS</span>
+              <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight mt-1">
+                Todo lo que pasa en tu mostrador, bajo control.
+              </h2>
+            </div>
+            <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+              Módulos diseñados para erradicar las colas en caja y unificar tus repuestos en una sola terminal veloz.
+            </p>
+          </div>
+
+          <!-- Bento Grid 4 Cards (Row 1: 7+5, Row 2: 5+7) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Card 01 (col-span-7) -->
+            <div class="lg:col-span-7 bg-surface-container-low p-8 rounded-xl relative overflow-hidden flex flex-col justify-between group hover:bg-surface-container transition-all">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-wider">MÓDULO 01</span>
+                  <span class="material-symbols-outlined text-tertiary text-2xl">point_of_sale</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface font-bold">Mostrador y Presupuestos WhatsApp</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  Búsqueda ultrarrápida (Ctrl + Espacio / F2), cotizaciones en 1 clic listas para pegar en WhatsApp con formato limpio o exportar en PDF, y conversión directa a Nota de Entrega con descuento atómico de stock en inventario.
+                </p>
+              </div>
+              <div class="mt-6 flex flex-wrap gap-2 pt-4 bg-surface-container-lowest/40 -mx-8 -mb-8 p-6">
+                <span class="px-2.5 py-1 rounded bg-surface-container-highest font-mono-indexer text-[11px] text-on-surface">Atajo de teclado instantáneo</span>
+                <span class="px-2.5 py-1 rounded bg-surface-container-highest font-mono-indexer text-[11px] text-on-surface">Copia automática al portapapeles</span>
+                <span class="px-2.5 py-1 rounded bg-surface-container-highest font-mono-indexer text-[11px] text-on-surface">Generador PDF para clientes</span>
+              </div>
+            </div>
+
+            <!-- Card 02 (col-span-5) -->
+            <div class="lg:col-span-5 bg-surface-container p-8 rounded-xl flex flex-col justify-between group hover:bg-surface-container-high transition-all">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer uppercase text-secondary tracking-wider">MÓDULO 02</span>
+                  <span class="material-symbols-outlined text-secondary text-2xl">category</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface font-bold">Inventario OEM y Equivalencias</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  Gestión avanzada por SKU interno, Código OEM original, múltiples códigos equivalentes (Cross-Reference de marcas como Denso, Bosch, Valeo, ACDelco), aplicación por vehículo/modelo/año y ubicación física exacta (Pasillo/Estante/Gaveta).
+                </p>
+              </div>
+              <div class="mt-6 pt-4">
+                <div class="inline-flex items-center gap-2 bg-surface-container-lowest px-3 py-2 rounded text-secondary font-mono-indexer text-[11px] uppercase">
+                  <span class="material-symbols-outlined text-[16px]">sync_alt</span>
+                  <span>Cross-Reference Engine integrado</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 03 (col-span-5) -->
+            <div class="lg:col-span-5 bg-surface-container p-8 rounded-xl flex flex-col justify-between group hover:bg-surface-container-high transition-all">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer uppercase text-[#10b981] tracking-wider">MÓDULO 03</span>
+                  <span class="material-symbols-outlined text-[#10b981] text-2xl">payments</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface font-bold">Caja Bimoneda y Cobro Mixto</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  Combina Efectivo USD, Efectivo Bs, Pago Móvil, Punto de Venta/Biopago y Zelle/Binance en una sola transacción. Incluye calculadora de vuelto cruzado que calcula vueltos en Bs o dólares exactos al instante.
+                </p>
+              </div>
+              <div class="mt-6 pt-4">
+                <div class="bg-surface-container-lowest p-3 rounded font-mono-indexer text-[11px] text-[#10b981] break-words">
+                  Ej: $50 = $30 Zelle + $10 Efectivo + 452.00 Bs Pago Móvil
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 04 (col-span-7) -->
+            <div class="lg:col-span-7 bg-surface-container-low p-8 rounded-xl flex flex-col justify-between group hover:bg-surface-container transition-all">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer uppercase text-[#06b6d4] tracking-wider">MÓDULO 04</span>
+                  <span class="material-symbols-outlined text-[#06b6d4] text-2xl">monitoring</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface font-bold">Tasas BCV y Reposición</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  Visualización permanente de dos tasas en la barra superior. Actualización automática de la tasa oficial BCV al detectar conexión a internet, y ajuste manual offline en 1 clic para la tasa de reposición de mercado sin interrumpir la facturación.
+                </p>
+              </div>
+              <div class="mt-6 flex flex-wrap gap-2 pt-4 bg-surface-container-lowest/40 -mx-8 -mb-8 p-6">
+                <span class="px-2.5 py-1 rounded bg-surface-container-highest font-mono-indexer text-[11px] text-on-surface">Protección de margen comercial</span>
+                <span class="px-2.5 py-1 rounded bg-surface-container-highest font-mono-indexer text-[11px] text-on-surface">Historial de tasas por venta</span>
+                <span class="px-2.5 py-1 rounded bg-surface-container-highest font-mono-indexer text-[11px] text-on-surface">Ajuste 100% offline</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- 04 // LICENCIAMIENTO TRANSPARENTE                         -->
+      <!-- ========================================================= -->
+      <section class="w-full px-gutter-desktop py-20 bg-surface-container-lowest scroll-mt-16" id="licenciamiento">
+        <div class="max-w-[1440px] mx-auto flex flex-col gap-12">
+          <!-- Section Header -->
+          <div class="flex flex-col max-w-3xl">
+            <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-widest">04 // LICENCIAMIENTO SIN SECUESTRO DE DATOS</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight mt-2">
+              Tus datos siempre son tuyos.
+            </h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant mt-3">
+              A diferencia del software SaaS que bloquea tu acceso si no pagas, Zorro Pit respeta tu inventario y tu negocio pase lo que pase.
+            </p>
+          </div>
+
+          <!-- 3-Step Horizontal Workflow Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            <!-- Step 1 -->
+            <div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between gap-6 transition-all hover:bg-surface-container">
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer text-on-surface-variant">PASO 01</span>
+                  <span class="px-2.5 py-0.5 rounded font-mono-indexer text-[10px] uppercase font-bold bg-[#22c55e]/15 text-[#22c55e]">
+                    ACTIVO
+                  </span>
+                </div>
+                <div class="w-10 h-10 rounded bg-[#22c55e]/10 flex items-center justify-center text-[#22c55e]">
+                  <span class="material-symbols-outlined text-[22px]">verified_user</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                  Operación completa offline con verificación criptográfica local. Facturación, ventas, reportes y cotizaciones sin interrupciones.
+                </p>
+              </div>
+              <div class="w-full h-1 bg-[#22c55e] rounded-full"></div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between gap-6 transition-all hover:bg-surface-container">
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer text-on-surface-variant">PASO 02</span>
+                  <span class="px-2.5 py-0.5 rounded font-mono-indexer text-[10px] uppercase font-bold bg-[#eab308]/15 text-[#eab308]">
+                    PERÍODO DE GRACIA (5 DÍAS)
+                  </span>
+                </div>
+                <div class="w-10 h-10 rounded bg-[#eab308]/10 flex items-center justify-center text-[#eab308]">
+                  <span class="material-symbols-outlined text-[22px]">hourglass_top</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                  Permite seguir vendiendo con normalidad tras la fecha de vencimiento, mostrando un recordatorio no invasivo para renovación.
+                </p>
+              </div>
+              <div class="w-full h-1 bg-[#eab308] rounded-full"></div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between gap-6 transition-all hover:bg-surface-container">
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-indexer text-mono-indexer text-on-surface-variant">PASO 03</span>
+                  <span class="px-2.5 py-0.5 rounded font-mono-indexer text-[10px] uppercase font-bold bg-[#f97316]/15 text-[#f97316]">
+                    SOLO LECTURA
+                  </span>
+                </div>
+                <div class="w-10 h-10 rounded bg-[#f97316]/10 flex items-center justify-center text-[#f97316]">
+                  <span class="material-symbols-outlined text-[22px]">lock_open</span>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                  Nunca bloqueamos tu información. Consulta tu inventario completo, listas de precios, reportes históricos y exporta toda tu data a Excel o CSV cuando quieras, hasta renovar.
+                </p>
+              </div>
+              <div class="w-full h-1 bg-[#f97316] rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- 05 // NOSOTROS (Asymmetric 5/7 Split)                    -->
+      <!-- ========================================================= -->
+      <section class="w-full px-gutter-desktop py-20 bg-surface scroll-mt-16" id="nosotros">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <!-- Left Column (col-span-5) -->
+          <div class="lg:col-span-5 flex flex-col gap-6">
+            <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-widest">05 // NOSOTROS</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface font-extrabold tracking-tight">
+              Ingeniería y soporte hechos en Venezuela para el sector autopartes.
+            </h2>
+            <div class="flex flex-wrap gap-2">
+              <div class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full font-mono-indexer text-[11px] text-on-surface">
+                <span class="material-symbols-outlined text-[16px] text-primary">support_agent</span>
+                <span>Soporte Directo</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full font-mono-indexer text-[11px] text-on-surface">
+                <span class="material-symbols-outlined text-[16px] text-tertiary">code</span>
+                <span>Arquitectura Nativa</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full font-mono-indexer text-[11px] text-on-surface">
+                <span class="material-symbols-outlined text-[16px] text-secondary">handyman</span>
+                <span>Enfoque Repuestero</span>
+              </div>
+            </div>
+            <div class="p-4 bg-surface-container-lowest rounded-xl flex items-center gap-4">
+              <div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-primary text-2xl">location_on</span>
+              </div>
+              <div>
+                <span class="font-mono-indexer text-[10px] uppercase text-on-surface-variant block">COBERTURA NACIONAL</span>
+                <span class="font-body-md text-body-md text-on-surface font-semibold">Atención en Caracas, Valencia, Barquisimeto, Maracaibo y todo el país</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column (col-span-7) -->
+          <div class="lg:col-span-7 bg-surface-container-low p-8 md:p-10 rounded-2xl">
+            <div class="flex items-center gap-2 mb-4 text-primary">
+              <span class="material-symbols-outlined">format_quote</span>
+              <span class="font-mono-indexer text-mono-indexer uppercase">NUESTRA VISIÓN DE CAMPO</span>
+            </div>
+            <p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+              Somos un equipo de ingeniería y soporte técnico dedicado a modernizar tiendas de repuestos automotrices con software nativo, rápido, honesto y adaptado a las condiciones reales de conectividad y bimoneda del país. Conocemos la presión del mostrador repuestero, donde el cliente espera con la pieza en la mano y la llamada de WhatsApp está entrando. Por eso construimos Zorro Pit: una herramienta pensada para trabajar sin descanso, sin excusas de caídas de internet y con atención directa de persona a persona.
+            </p>
+            <!-- Metrics Row -->
+            <div class="mt-8 pt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 bg-surface-container-lowest/60 -mx-8 md:-mx-10 -mb-8 md:-mb-10 p-6 md:p-8 rounded-b-2xl">
+              <div>
+                <span class="font-mono-editorial-lg text-2xl text-tertiary font-bold block">100%</span>
+                <span class="font-mono-indexer text-[10px] text-on-surface-variant uppercase mt-1 block">Local First</span>
+              </div>
+              <div>
+                <span class="font-mono-editorial-lg text-2xl text-primary font-bold block">24/7</span>
+                <span class="font-mono-indexer text-[10px] text-on-surface-variant uppercase mt-1 block">Continuidad Operativa</span>
+              </div>
+              <div>
+                <span class="font-mono-editorial-lg text-2xl text-secondary font-bold block">&lt; 15 min</span>
+                <span class="font-mono-indexer text-[10px] text-on-surface-variant uppercase mt-1 block">Respuesta de Soporte</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- 06 // CONTACTO Y DEMO (Asymmetric 6/6 Split)              -->
+      <!-- ========================================================= -->
+      <section class="w-full px-gutter-desktop py-20 bg-surface-container-lowest scroll-mt-16" id="contacto">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <!-- Left Column (col-span-6) -->
+          <div class="lg:col-span-6 flex flex-col gap-6">
+            <span class="font-mono-indexer text-mono-indexer uppercase text-primary tracking-widest">06 // CONTACTO</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface font-extrabold tracking-tight">
+              ¿Listo para acelerar tu mostrador?
+            </h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant">
+              Agenda una demostración personalizada o escríbenos directamente para evaluar Zorro Pit en tu tienda.
+            </p>
+
+            <!-- Prominent WhatsApp Button -->
+            <a class="bg-[#25d366] hover:bg-[#20ba59] text-black font-bold text-lg px-8 py-4 rounded-xl flex items-center gap-3 w-fit mb-2 shadow-lg shadow-[#25d366]/20 transition-all font-body-md" href="https://wa.me/584120000000?text=Hola,%20deseo%20evaluar%20Zorro%20Pit%20en%20mi%20tienda" rel="noopener noreferrer" target="_blank">
+              <span class="material-symbols-outlined text-[24px]">chat</span>
+              <span>Escribir por WhatsApp</span>
+            </a>
+
+            <!-- Technical contact items -->
+            <div class="flex flex-col gap-4 mt-2 bg-surface-container-low p-6 rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-[18px]">mail</span>
+                </div>
+                <div>
+                  <span class="font-mono-indexer text-[10px] text-on-surface-variant uppercase block">Correo Electrónico</span>
+                  <a href="mailto:contacto@zorropit.com" class="font-mono-data text-mono-data text-on-surface font-semibold hover:text-primary transition-colors">contacto@zorropit.com</a>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-[18px]">location_city</span>
+                </div>
+                <div>
+                  <span class="font-mono-indexer text-[10px] text-on-surface-variant uppercase block">Ubicación y Despliegue</span>
+                  <span class="font-body-md text-body-md text-on-surface">Venezuela (Despliegues remotos e instalaciones presenciales disponibles)</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-tertiary">
+                  <span class="material-symbols-outlined text-[18px]">schedule</span>
+                </div>
+                <div>
+                  <span class="font-mono-indexer text-[10px] text-on-surface-variant uppercase block">Tiempo de Respuesta</span>
+                  <span class="font-body-md text-body-md text-on-surface">Menos de 15 minutos en horario comercial</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column (col-span-6): Structured Dark Form Card -->
+          <div class="lg:col-span-6 bg-surface-container-low p-8 rounded-2xl shadow-xl">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="font-headline-md text-headline-md text-on-surface font-bold">Solicitar Demostración Guiada</h3>
+              <span class="material-symbols-outlined text-primary">desktop_windows</span>
+            </div>
+
+            <form id="demo-form" class="flex flex-col gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label for="lead-name" class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">Nombre completo</label>
+                <div class="bg-surface-container px-3.5 py-3 rounded-lg flex items-center gap-2 focus-within:ring-1 focus-within:ring-primary-container">
+                  <span class="material-symbols-outlined text-on-surface-variant text-[18px]">person</span>
+                  <input id="lead-name" name="name" class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none font-body-md" placeholder="Ej: Carlos Mendoza" required type="text" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                  <label for="lead-store" class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">Nombre de tu tienda</label>
+                  <div class="bg-surface-container px-3.5 py-3 rounded-lg flex items-center gap-2 focus-within:ring-1 focus-within:ring-primary-container">
+                    <span class="material-symbols-outlined text-on-surface-variant text-[18px]">store</span>
+                    <input id="lead-store" name="store" class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none font-body-md" placeholder="Ej: Repuestos El Samán C.A." required type="text" />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label for="lead-city" class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">Ciudad</label>
+                  <div class="bg-surface-container px-3.5 py-3 rounded-lg flex items-center gap-2 focus-within:ring-1 focus-within:ring-primary-container">
+                    <span class="material-symbols-outlined text-on-surface-variant text-[18px]">pin_drop</span>
+                    <input id="lead-city" name="city" class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none font-body-md" placeholder="Ej: Valencia, Carabobo" required type="text" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label for="lead-phone" class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">WhatsApp o Teléfono</label>
+                <div class="bg-surface-container px-3.5 py-3 rounded-lg flex items-center gap-2 focus-within:ring-1 focus-within:ring-primary-container">
+                  <span class="material-symbols-outlined text-on-surface-variant text-[18px]">call</span>
+                  <input id="lead-phone" name="phone" class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none font-body-md" placeholder="Ej: +58 414 1234567" required type="tel" />
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label for="lead-message" class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">Mensaje o consulta</label>
+                <div class="bg-surface-container px-3.5 py-3 rounded-lg focus-within:ring-1 focus-within:ring-primary-container">
+                  <textarea id="lead-message" name="message" class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none font-body-md resize-none" placeholder="¿Cuántas terminales tienes? ¿Qué dudas tienes sobre tus catálogos o tasas?" rows="3"></textarea>
+                </div>
+              </div>
+
+              <button class="bg-primary-container hover:bg-[#e05e00] text-[#0c0e11] font-bold w-full py-4 rounded-lg shadow-lg shadow-primary-container/25 transition-all mt-2 font-mono-indexer text-mono-indexer uppercase flex items-center justify-center gap-2" type="submit">
+                <span>Solicitar Demo por WhatsApp</span>
+                <span class="material-symbols-outlined text-[18px]">send</span>
+              </button>
+
+              <div id="form-feedback" class="hidden rounded-lg bg-tertiary-container/20 border border-tertiary/40 px-4 py-3 text-body-sm text-tertiary">
+                Solicitud preparada. Se abrió WhatsApp con tus datos para coordinar la demostración técnica.
+              </div>
+
+              <p class="font-mono-data text-[11px] text-on-surface-variant text-center mt-1">
+                Tus datos son confidenciales y solo se usan para coordinar la demo técnica.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- EDITORIAL FOOTER                                          -->
+  <!-- ========================================================= -->
+  <footer class="w-full bg-surface-container-lowest border-t border-surface-container-high/60">
+    <div class="max-w-[1440px] mx-auto px-gutter-desktop py-space-xl">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-space-xl">
+        <div class="flex flex-col gap-space-sm">
+          <div class="flex items-center gap-space-xs">
+            <img alt="Zorro Pit Logo" class="h-6 w-6 rounded object-contain" src="./assets/zorro-pit-icon.png" />
+            <span class="font-headline-sm text-headline-sm uppercase text-on-surface font-bold">ZORRO PIT</span>
+            <span class="font-mono-indexer text-mono-indexer uppercase bg-primary-container text-on-primary-container px-space-xs py-0.5 rounded">POS</span>
+          </div>
+          <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
+            Zorro Pit — Control interno y ventas para repuestos automotrices. Telemetría y catálogo en tiempo real para el sector autopartes.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-space-sm">
+          <span class="font-mono-indexer text-mono-indexer uppercase text-primary">Navegación</span>
+          <nav class="flex flex-col gap-space-xs" aria-label="Navegación pie de página">
+            <a class="font-body-md text-body-md text-primary font-bold hover:text-on-surface transition-colors" href="#la-app">La App</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#modulos">Módulos</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#licenciamiento">Licenciamiento</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#nosotros">Nosotros</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#contacto">Contacto</a>
+          </nav>
+        </div>
+
+        <div class="flex flex-col gap-space-sm">
+          <span class="font-mono-indexer text-mono-indexer uppercase text-primary">Arquitectura</span>
+          <div class="flex flex-col gap-space-xs font-mono-data text-mono-data text-on-surface-variant">
+            <span>Offline-First Engine</span>
+            <span>Hecho para el mostrador venezolano</span>
+            <span>Multi-moneda USD / Bs. (BCV &amp; Paralelo)</span>
+            <div class="mt-space-sm flex items-center gap-space-xs">
+              <span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span>
+              <span class="font-mono-indexer text-mono-indexer uppercase text-tertiary">Local Cache Activo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-space-xl pt-space-md border-t border-surface-container-high/40 flex flex-col md:flex-row items-center justify-between gap-space-sm">
+        <span class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">© 2026 ZORRO PIT. CONTROL INDUSTRIAL DE REPUESTOS.</span>
+        <span class="font-mono-indexer text-mono-indexer uppercase text-on-surface-variant">SISTEMA VENEZUELA // AUTOPARTES POS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const menuBtn = document.getElementById("mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener("click", function () {
+          const isHidden = mobileMenu.classList.toggle("hidden");
+          menuBtn.setAttribute("aria-expanded", String(!isHidden));
+        });
+
+        mobileMenu.querySelectorAll("a").forEach(function (link) {
+          link.addEventListener("click", function () {
+            mobileMenu.classList.add("hidden");
+            menuBtn.setAttribute("aria-expanded", "false");
+          });
+        });
+      }
+
+      const demoForm = document.getElementById("demo-form");
+      const feedback = document.getElementById("form-feedback");
+
+      if (demoForm) {
+        demoForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const name = document.getElementById("lead-name").value.trim();
+          const store = document.getElementById("lead-store").value.trim();
+          const city = document.getElementById("lead-city").value.trim();
+          const phone = document.getElementById("lead-phone").value.trim();
+          const message = document.getElementById("lead-message").value.trim();
+
+          const lines = [
+            "Hola, deseo solicitar una demo de Zorro Pit:",
+            "- Nombre: " + name,
+            "- Tienda: " + store,
+            "- Ciudad: " + city,
+            "- WhatsApp/Tel: " + phone
+          ];
+          if (message) {
+            lines.push("- Consulta: " + message);
+          }
+
+          const url = "https://wa.me/584120000000?text=" + encodeURIComponent(lines.join("\n"));
+          window.open(url, "_blank", "noopener,noreferrer");
+
+          if (feedback) {
+            feedback.classList.remove("hidden");
+          }
+          demoForm.reset();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
