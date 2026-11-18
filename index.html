@@ -203,6 +203,10 @@
 
             <!-- CTAs Row -->
             <div class="mt-8 flex flex-wrap gap-4 items-center">
+              <a id="btn-download-zp" class="bg-primary-container hover:bg-[#e05e00] text-[#0c0e11] font-bold px-7 py-3.5 rounded-lg flex items-center gap-2 shadow-lg shadow-primary-container/25 transition-all font-body-md" href="https://github.com/zorropit/zorropit.github.io/releases/download/v0.1.0/Zorro.Pit_0.1.0_x64-setup.exe" download>
+                <span class="material-symbols-outlined text-[20px]">download</span>
+                <span id="btn-download-zp-label">Descargar v0.1.0 (Windows)</span>
+              </a>
               <a class="bg-[#25d366] hover:bg-[#20ba59] text-[#0c0e11] font-bold px-7 py-3.5 rounded-lg flex items-center gap-2 shadow-lg shadow-[#25d366]/20 transition-all font-body-md" href="https://wa.me/584126397882?text=Hola,%20deseo%20solicitar%20una%20demo%20de%20Zorro%20Pit" rel="noopener noreferrer" target="_blank">
                 <span class="material-symbols-outlined text-[20px]">chat</span>
                 <span>Solicitar Demo por WhatsApp</span>
@@ -844,6 +848,30 @@
           }
           demoForm.reset();
         });
+      }
+
+      const downloadBtn = document.getElementById("btn-download-zp");
+      const downloadLabel = document.getElementById("btn-download-zp-label");
+      if (downloadBtn) {
+        fetch("https://api.github.com/repos/zorropit/zorropit.github.io/releases/latest")
+          .then(function (res) {
+            return res.ok ? res.json() : null;
+          })
+          .then(function (release) {
+            if (!release || !Array.isArray(release.assets)) return;
+            const exe = release.assets.find(function (a) {
+              return typeof a.name === "string" && a.name.toLowerCase().endsWith("-setup.exe");
+            });
+            if (exe && exe.browser_download_url) {
+              downloadBtn.href = exe.browser_download_url;
+              if (downloadLabel && release.tag_name) {
+                downloadLabel.textContent = "Descargar " + release.tag_name + " (Windows)";
+              }
+            }
+          })
+          .catch(function () {
+            // Conserva el enlace directo de respaldo (v0.1.0)
+          });
       }
     })();
   </script>
